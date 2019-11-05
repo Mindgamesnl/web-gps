@@ -31,7 +31,7 @@ Example code:
 <div id="results"></div>
 ```
 
-outputs something like
+outputs something like this, with the location names and real time distance in meters
 ```$xslt
 Hilfertshof: XXXX.4008160069366
 Beeld en geluid: XXX.6356992816116
