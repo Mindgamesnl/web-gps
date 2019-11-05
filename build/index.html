@@ -1,0 +1,25 @@
+<script src="bundle.js"></script>
+
+<script>
+    function onUpdate(trackers) {
+        // clear div
+        document.getElementById("results").innerHTML = "";
+
+        for (const tracker of trackers) {
+            document.getElementById("results").innerHTML += "<b>" + tracker.tracker.data + "</b>: " + tracker.meters;
+        }
+    }
+
+    function onError() {
+        alert("Something fucked up!");
+    }
+
+    const webGPS = new WebGPS(onUpdate, onError);
+
+    // register a few sample locations from my local area
+    webGPS.trackLocation("Hilfertshof", 52.224827, 5.176331);
+    webGPS.trackLocation("Beeld en geluid", 52.235663, 5.172540);
+    webGPS.trackLocation("ROC", 52.216036, 5.188179);
+    webGPS.trackLocation("Scouting", 52.235801, 5.200051);
+</script>
+<div id="results"></div>
