@@ -9,7 +9,7 @@ class WebGPS {
 
         navigator.geolocation.watchPosition((update) => {
             this._locationUpdate(update.coords.latitude, update.coords.longitude);
-        }, this._locationError, {enableHighAccuracy: true});
+        }, this.onError, {enableHighAccuracy: true});
     }
 
     trackLocation(data, lat, long) {
@@ -19,20 +19,17 @@ class WebGPS {
         });
     }
 
-    _locationError() {
-        this.onError();
-    }
-
     _locationUpdate(lat, long) {
         let currentLocation = new Coordinate(lat, long);
         let trackingDistances = [];
 
-        for (const tracker of this._trackers) {
+        this._trackers.forEach((tracker) => {
+            let distance = tracker.coordinates.distanceInMeters(currentLocation);
             trackingDistances.push({
-                meters: tracker.distanceInMeters(currentLocation),
-                tracker: tracker
+                meters: distance,
+                tracker: tracker.data
             });
-        }
+        });
 
         this.onUpdate(trackingDistances);
     }

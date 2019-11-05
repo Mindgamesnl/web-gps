@@ -68,7 +68,7 @@
 	
 	        navigator.geolocation.watchPosition(function (update) {
 	            _this._locationUpdate(update.coords.latitude, update.coords.longitude);
-	        }, this._locationError, { enableHighAccuracy: true });
+	        }, this.onError, { enableHighAccuracy: true });
 	    }
 	
 	    _createClass(WebGPS, [{
@@ -80,43 +80,18 @@
 	            });
 	        }
 	    }, {
-	        key: "_locationError",
-	        value: function _locationError() {
-	            this.onError();
-	        }
-	    }, {
 	        key: "_locationUpdate",
 	        value: function _locationUpdate(lat, long) {
 	            var currentLocation = new _libCoordinate2["default"](lat, long);
 	            var trackingDistances = [];
 	
-	            var _iteratorNormalCompletion = true;
-	            var _didIteratorError = false;
-	            var _iteratorError = undefined;
-	
-	            try {
-	                for (var _iterator = this._trackers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                    var tracker = _step.value;
-	
-	                    trackingDistances.push({
-	                        meters: tracker.distanceInMeters(currentLocation),
-	                        tracker: tracker
-	                    });
-	                }
-	            } catch (err) {
-	                _didIteratorError = true;
-	                _iteratorError = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion && _iterator["return"]) {
-	                        _iterator["return"]();
-	                    }
-	                } finally {
-	                    if (_didIteratorError) {
-	                        throw _iteratorError;
-	                    }
-	                }
-	            }
+	            this._trackers.forEach(function (tracker) {
+	                var distance = tracker.coordinates.distanceInMeters(currentLocation);
+	                trackingDistances.push({
+	                    meters: distance,
+	                    tracker: tracker.data
+	                });
+	            });
 	
 	            this.onUpdate(trackingDistances);
 	        }
@@ -158,13 +133,13 @@
 	        key: "distanceInKilometers",
 	        value: function distanceInKilometers(otherCoordinate) {
 	            var R = 6371; // Radius of the earth in km
-	            var dLat = Coordinate._degreesToRadians(otherCoordinate.latitude - this.latitude); // deg2rad below
-	            var dLon = Coordinate._degreesToRadians(otherCoordinate.longitude - this.longitude);
-	            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Coordinate._degreesToRadians(this.latitude)) * Math.cos(Coordinate._degreesToRadians(otherCoordinate.latitude)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	            var dLat = this._degreesToRadians(otherCoordinate.latitude - this.latitude); // deg2rad below
+	            var dLon = this._degreesToRadians(otherCoordinate.longitude - this.longitude);
+	            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this._degreesToRadians(this.latitude)) * Math.cos(this._degreesToRadians(otherCoordinate.latitude)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
 	            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 	            return R * c; // Distance in km
 	        }
-	    }], [{
+	    }, {
 	        key: "_degreesToRadians",
 	        value: function _degreesToRadians(deg) {
 	            return deg * (Math.PI / 180);

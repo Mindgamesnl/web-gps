@@ -6,7 +6,7 @@
         document.getElementById("results").innerHTML = "";
 
         for (const tracker of trackers) {
-            document.getElementById("results").innerHTML += "<b>" + tracker.tracker.data + "</b>: " + tracker.meters;
+            document.getElementById("results").innerHTML += "<b>" + tracker.tracker + "</b>: " + tracker.meters + "<br />";
         }
     }
 
@@ -14,6 +14,7 @@
         alert("Something fucked up!");
     }
 
+    console.log('start')
     const webGPS = new WebGPS(onUpdate, onError);
 
     // register a few sample locations from my local area
